@@ -1,31 +1,34 @@
-@font-face {
-    font-family: 'LXGWWenKaiMonoScreen';
-    src: url('/assets/font/LXGWWenKaiMonoScreen.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
+/* 全局字体：优先 CDN 字体（和你yml完全匹配） → 兜底本地 → 系统 */
+body,
+.md-typeset,
+.md-nav,
+.md-nav__link,
+.md-header,
+.md-footer,
+h1, h2, h3, h4, h5, h6,
+p, a, li, span, code, pre {
+    font-family:
+        "LXGW WenKai",       /* ① 你真正的CDN字体（正确！） */
+        "LXGWWenKaiMonoScreen", /* ② 兜底本地字体 */
+        sans-serif !important;
+    font-display: swap;
+}
 
-body {
-    font-family: 'LXGWWenKaiMonoScreen', sans-serif;
-  }
-
+/* 你原来的字号样式 */
 p {
-    font-size: 18px; /* 正文字体大小 */
+    font-size: 18px;
 }
-
 span {
-    font-size: 1.1em; /* 侧边栏条目相对原始字体放大10% */
+    font-size: 1.1em;
+}
+.md-nav__title {
+    font-size: 1.2em;
+}
+.md-nav__item--active {
+    font-size: 1.15em;
 }
 
-/* 目录标题、左侧边栏标题 */
-.md-nav__title{
-  font-size: 1.2em; /* 侧边栏相对原始字体放大20% */
-}
-.md-nav__item--active{
-  font-size: 1.15em; 
-}
-
-/* 地边栏 */
+/* 底部栏 */
 .md-footer-meta {
-    background-color: #546d78 !important;  /* 深灰色背景 */
+    background-color: #546d78 !important;
 }
