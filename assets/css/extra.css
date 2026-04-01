@@ -32,3 +32,8 @@ span {
 .md-footer-meta {
     background-color: #546d78 !important;
 }
+
+/* 问题1：加粗字体更明显 */
+strong, b {
+    font-weight: 700 !important;
+}
