@@ -1,6 +1,7 @@
 /* 自定义图片边框-开始 */
 
-.md-content img {
+/* 只有带上 .card-img 类的图片才会应用此样式 */
+.md-content img.card-img {
   /* 图片圆角 */
   border-radius: 17px;
   
@@ -20,7 +21,7 @@
 }
 
 /* 鼠标悬停：让这种“分明感”在交互时更加生动 */
-.md-content img:hover {
+.md-content img.card-img:hover {
   transform: translateY(-3px); 
   border-color: rgba(0, 0, 0, 0.18); /* 悬停时边缘更清晰 */
   box-shadow: 

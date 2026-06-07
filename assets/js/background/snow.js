@@ -8,7 +8,7 @@ window.EffectSnow = (function () {
 
     // ========== 可配置参数 ==========
     const CONFIG = {
-        maxFlakes: 40,
+        maxFlakes: 25,
         minSize: 10,
         maxSize: 28,
         minSpeed: 0.4,

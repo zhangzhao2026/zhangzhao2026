@@ -8,7 +8,7 @@ window.EffectFirefly = (function () {
 
     // ========== 可配置参数 ==========
     const CONFIG = {
-        count: 20,
+        count: 15,
         minSpeed: 0.2,
         maxSpeed: 0.6,
         minSize: 2,

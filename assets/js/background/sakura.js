@@ -9,7 +9,7 @@ window.EffectSakura = (function () {
 
     // ========== 可配置参数（保留你完美的樱花参数） ==========
     const CONFIG = {
-        maxPetals: 35,               // 同时存在的樱花数量
+        maxPetals: 25,               // 同时存在的樱花数量
         minSpeed: 0.4,               // 最小下落速度
         maxSpeed: 1.2,               // 最大下落速度
         wind: 0.3,                   // 基础水平风向
