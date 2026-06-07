@@ -1,91 +1,121 @@
-(function () {
-    // ==========================================
-    // 1. 核心配置区：登记所有特工
-    // ==========================================
-    const EFFECTS = {
-        Sakura: { globalName: 'EffectSakura', path: '/assets/js/background/sakura.js' },
-        Star:   { globalName: 'EffectStar',   path: '/assets/js/background/star_rain.js' },
-        Maple:  { globalName: 'EffectMaple',  path: '/assets/js/background/maple_leaf.js' },
-        Snow:   { globalName: 'EffectSnow',   path: '/assets/js/background/snow.js' } // 新增：雪花
+// 🌟 注册为全局大管家可调用的特工：EffectSnow
+window.EffectSnow = (function () {
+
+    let canvas = null;
+    let ctx = null;
+    let flakes = [];
+    let animationFrameId = null;
+
+    // ========== 可配置参数 ==========
+    const CONFIG = {
+        maxFlakes: 40,
+        minSize: 10,
+        maxSize: 28,
+        minSpeed: 0.4,
+        maxSpeed: 1.5,
+        baseWind: 0.1,
+        opacityRange: [0.3, 0.85],
     };
 
-    // ==========================================
-    // 2. 节气季节判断器
-    // ==========================================
-    function getSeason() {
-        const now = new Date();
-        const m = now.getMonth() + 1;
-        const d = now.getDate();
-        const ds = `${m}-${d}`;
-        if (ds >= '2-4' && ds < '5-5') return 'spring';
-        if (ds >= '5-5' && ds < '8-7') return 'summer';
-        if (ds >= '8-7' && ds < '11-7') return 'autumn';
-        return 'winter';
+    // 路径探测
+    const snowImg = new Image();
+    try {
+        const currentScript = document.querySelector('script[src*="background.js"]');
+        snowImg.src = currentScript ? currentScript.src.replace('js/background.js', 'svg/snow.svg') : 'assets/svg/snow.svg';
+    } catch (e) {
+        snowImg.src = 'assets/svg/snow.svg';
     }
 
-    // ==========================================
-    // 3. 强力清理区：一键拉闸（所有特效必须在此注册）
-    // ==========================================
-    function stopAllEffects() {
-        const names = ['EffectSakura', 'EffectStar', 'EffectMaple', 'EffectSnow'];
-        names.forEach(name => {
-            if (window[name] && window[name].stop) window[name].stop();
-        });
+    function resize() {
+        if (!canvas) return;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        ctx.scale(dpr, dpr);
     }
 
-    // ==========================================
-    // 4. 动态加载与启动引擎
-    // ==========================================
-    function loadAndStart(effectKey) {
-        const effect = EFFECTS[effectKey];
-        if (!effect) return;
-        const globalObj = window[effect.globalName];
-
-        if (globalObj && globalObj.start) {
-            globalObj.start();
-            return;
+    class SnowFlake {
+        constructor(initial = false) { this.reset(initial); }
+        reset(initial = false) {
+            this.x = Math.random() * window.innerWidth;
+            this.y = initial ? Math.random() * window.innerHeight : -Math.random() * 30;
+            const sizeProgress = Math.random();
+            this.size = CONFIG.minSize + sizeProgress * (CONFIG.maxSize - CONFIG.minSize);
+            this.speed = CONFIG.minSpeed + sizeProgress * (CONFIG.maxSpeed - CONFIG.minSpeed);
+            this.opacity = CONFIG.opacityRange[0] + sizeProgress * (CONFIG.opacityRange[1] - CONFIG.opacityRange[0]);
+            this.swingSpeed = 0.01 + Math.random() * 0.015;
+            this.swingRadius = 0.3 + Math.random() * 0.8;
+            this.swingOffset = Math.random() * Math.PI * 2;
         }
-
-        const script = document.createElement('script');
-        script.src = effect.path;
-        script.onload = () => {
-            if (window[effect.globalName] && window[effect.globalName].start) {
-                window[effect.globalName].start();
-            }
-        };
-        script.onerror = () => console.error(`【大管家】特效加载失败: ${effect.path}`);
-        document.head.appendChild(script);
-    }
-
-    // ==========================================
-    // 5. 总指挥部：时令 + 时间调度
-    // ==========================================
-    function dispatchEffect() {
-        stopAllEffects(); // 先把所有在跑的特效强制下班
-
-        const hour = new Date().getHours();
-        const isNight = (hour < 6 || hour >= 18);
-
-        // 如果是夜晚，无条件星星雨
-        if (isNight) {
-            loadAndStart('Star');
-            return;
+        update() {
+            this.y += this.speed;
+            this.swingOffset += this.swingSpeed;
+            const currentSwing = Math.sin(this.swingOffset);
+            this.x += CONFIG.baseWind + currentSwing * this.swingRadius;
+            this.rotation = currentSwing * 0.08;
+            if (this.y > window.innerHeight + 30 || this.x < -30 || this.x > window.innerWidth + 30) this.reset();
         }
-
-        // 白天根据节气调度
-        const season = getSeason();
-        switch (season) {
-            case 'spring': loadAndStart('Sakura'); break;
-            case 'summer': loadAndStart('Sakura'); break; // 后续改为夏季特效
-            case 'autumn': loadAndStart('Maple');  break;
-            case 'winter': loadAndStart('Snow');   break; // 已更新：冬天调用雪花
+        draw(ctx) {
+            if (!snowImg.complete) return;
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.rotation);
+            ctx.globalAlpha = this.opacity;
+            ctx.drawImage(snowImg, -this.size / 2, -this.size / 2, this.size, this.size);
+            ctx.restore();
         }
     }
 
+    function animate() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        for (const flake of flakes) {
+            flake.update();
+            flake.draw(ctx);
+        }
+        animationFrameId = requestAnimationFrame(animate);
+    }
+
     // ==========================================
-    // 6. 自动化监听
+    // 遥控器：启动
     // ==========================================
-    if (document.readyState === 'complete') dispatchEffect();
-    else window.addEventListener('load', dispatchEffect);
-    document.addEventListener("DOMContentSwitch", dispatchEffect);
+    function start() {
+        if (document.getElementById('snow-flakes-canvas')) return;
+
+        canvas = document.createElement('canvas');
+        canvas.id = 'snow-flakes-canvas';
+        ctx = canvas.getContext('2d');
+        canvas.style.position = 'fixed';
+        canvas.style.top = '0';
+        canvas.style.left = '0';
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.pointerEvents = 'none';
+        canvas.style.zIndex = '999996';
+        canvas.style.willChange = 'transform';
+        document.body.appendChild(canvas);
+
+        window.addEventListener('resize', resize);
+        resize();
+
+        flakes = [];
+        for (let i = 0; i < CONFIG.maxFlakes; i++) flakes.push(new SnowFlake(true));
+
+        if (snowImg.complete) animate();
+        else snowImg.onload = animate;
+    }
+
+    // ==========================================
+    // 遥控器：停止
+    // ==========================================
+    function stop() {
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        window.removeEventListener('resize', resize);
+        if (canvas && canvas.parentNode) canvas.parentNode.removeChild(canvas);
+        canvas = null;
+        ctx = null;
+        flakes = [];
+    }
+
+    return { start, stop };
 })();

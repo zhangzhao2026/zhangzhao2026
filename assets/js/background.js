@@ -1,21 +1,23 @@
 (function () {
     // ==========================================
-    // 1. 核心配置区：登记特工档案
+    // 1. 核心配置区：登记所有特工
     // ==========================================
     const EFFECTS = {
         Sakura: { globalName: 'EffectSakura', path: '/assets/js/background/sakura.js' },
+        Ginkgo:  { globalName: 'EffectGinkgo',  path: '/assets/js/background/ginkgo.js' },
+        Maple:  { globalName: 'EffectMaple',  path: '/assets/js/background/maple_leaf.js' },
+        Snow:   { globalName: 'EffectSnow',   path: '/assets/js/background/snow.js' },
         Star:   { globalName: 'EffectStar',   path: '/assets/js/background/star_rain.js' },
-        Maple:  { globalName: 'EffectMaple',  path: '/assets/js/background/maple_leaf.js' }
+        Firefly: { globalName: 'EffectFirefly', path: '/assets/js/background/firefly.js' }
     };
 
     // ==========================================
-    // 2. 节气季节判断器（核心算法）
+    // 2. 节气季节判断器
     // ==========================================
     function getSeason() {
         const now = new Date();
-        const m = now.getMonth() + 1; // 1-12
+        const m = now.getMonth() + 1;
         const d = now.getDate();
-        // 简化版核心日期对齐（立春2.4，立夏5.5，立秋8.7，立冬11.7）
         const ds = `${m}-${d}`;
         if (ds >= '2-4' && ds < '5-5') return 'spring';
         if (ds >= '5-5' && ds < '8-7') return 'summer';
@@ -24,10 +26,10 @@
     }
 
     // ==========================================
-    // 3. 强力清理区：一键拉闸
+    // 3. 强力清理区：一键拉闸（所有特效必须在此注册）
     // ==========================================
     function stopAllEffects() {
-        const names = ['EffectSakura', 'EffectStar', 'EffectMaple'];
+        const names = ['EffectSakura', 'EffectGinkgo', 'EffectMaple', 'EffectSnow', 'EffectStar', 'EffectFirefly'];
         names.forEach(name => {
             if (window[name] && window[name].stop) window[name].stop();
         });
@@ -53,33 +55,42 @@
                 window[effect.globalName].start();
             }
         };
+        script.onerror = () => console.error(`【大管家】特效加载失败: ${effect.path}`);
         document.head.appendChild(script);
     }
 
     // ==========================================
     // 5. 总指挥部：时令 + 时间调度
     // ==========================================
-    function dispatchEffect() {
-        stopAllEffects();
+function dispatchEffect() {
+        stopAllEffects(); // 先把所有在跑的特效强制下班
 
         const hour = new Date().getHours();
         const isNight = (hour < 6 || hour >= 18);
+        const season = getSeason();
 
-        // 如果是夜晚，无条件星星雨
+        // 判定逻辑：
         if (isNight) {
+            // 所有夜晚必有星星雨
             loadAndStart('Star');
+            
+            // 如果是夏天，额外加派萤火虫特工
+            if (season === 'summer') {
+                loadAndStart('Firefly');
+            }
             return;
         }
 
         // 白天根据节气调度
-        const season = getSeason();
         switch (season) {
             case 'spring': loadAndStart('Sakura'); break;
-            case 'summer': loadAndStart('Sakura'); break; // 暂用樱花代替
+            case 'summer': loadAndStart('Ginkgo'); break;
             case 'autumn': loadAndStart('Maple');  break;
-            case 'winter': loadAndStart('Maple');  break; // 暂用枫叶代替
+            case 'winter': loadAndStart('Snow');   break;
         }
     }
+
+
 
     // ==========================================
     // 6. 自动化监听
@@ -87,5 +98,4 @@
     if (document.readyState === 'complete') dispatchEffect();
     else window.addEventListener('load', dispatchEffect);
     document.addEventListener("DOMContentSwitch", dispatchEffect);
-
 })();

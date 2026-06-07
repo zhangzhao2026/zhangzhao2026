@@ -32,21 +32,69 @@ span {
 
 
 
-/* 自定义底部栏配色 */
-.md-footer-meta {
+
+/* 统一管理浅色模式下的自定义配色 */
+[data-md-color-scheme="default"] {
+  /* 修改顶部栏 */
+  --md-primary-fg-color: #83a598;
+  
+  /* 修改底部栏 */
+  .md-footer-meta {
+    background-color: #83a598 !important;
+  }
+}
+
+
+
+/* 统一管理深色模式下的自定义配色 */
+[data-md-color-scheme="slate"] {
+  /* 1. 顶部栏配色 */
+  --md-primary-fg-color: #546d78;
+  
+  /* 2. 护眼背景与文字 (整体优化) */
+  --md-default-bg-color: #242d35;       /* 深灰背景 */
+  --md-default-fg-color: #d1d1d1;       /* 浅灰文字 */
+  
+  /* 3. 底部栏配色 */
+  .md-footer-meta {
     background-color: #546d78 !important;
+  }
+
+  /* 4. 代码块背景色 (比页面背景略深，产生层次感) */
+  --md-code-bg-color: #2e3436;          /*  #1d2021 */
+
+}
+
+
+/* 额外的视觉优化：增强代码块内文字的对比度 */
+[data-md-color-scheme="slate"] code {
+  color: #ecb126; /* Gruvbox 经典金黄色，用于行内代码 */
 }
 
 
 
 /* 问题修复：LXGW WenKai 加粗字体不明显 */
-strong, b {
+/* 方案一：添加红色，突出显示 */
+/* 或者试试加下划线： text-decoration: underline; */
+
+/* strong, b {
     font-weight: 700 !important;
-    color: #d32f2f !important;     /* 添加红色，突出显示 */
-    /* 或者试试加下划线： text-decoration: underline; */
+    color: #d32f2f !important;     
+} */
+
+
+/* 浅色模式 (default)：使用较深、沉稳的红色 */
+[data-md-color-scheme="default"] :is(strong, b) {
+  color: #c62828 !important; 
+  font-weight: 700 !important;
 }
 
-
+/* 深色模式 (slate)：使用更柔和、更护眼的亮红色/橙红色 */
+/* 使用 :is() 可以合并选择器，避免重复前缀 */
+[data-md-color-scheme="slate"] :is(strong, b) {
+  color: #f44336 !important;
+  font-weight: 700 !important;
+}
 
 
 
@@ -109,36 +157,47 @@ strong, b {
 
 /* 外部链接样式-开始 */
 
+/* 定义颜色变量 */
+:root {
+  --external-link-color: #0066cc; /* 日间模式颜色 */
+  --external-link-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230066cc' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'%3E%3C/path%3E%3Cpolyline points='15 3 21 3 21 9'%3E%3C/polyline%3E%3Cline x1='10' y1='14' x2='21' y2='3'%3E%3C/line%3E%3C/svg%3E");
+}
+
+/* 夜间模式适配：通常 Material 主题使用 data-md-color-scheme 属性 */
+[data-md-color-scheme="slate"] {
+  --external-link-color: #66b3ff; /* 夜间模式更柔和的蓝色 */
+  --external-link-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2366b3ff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'%3E%3C/path%3E%3Cpolyline points='15 3 21 3 21 9'%3E%3C/polyline%3E%3Cline x1='10' y1='14' x2='21' y2='3'%3E%3C/line%3E%3C/svg%3E");
+}
+
 /* 外部链接基础样式 */
 a.external-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px; /* 文字与图标的间距 */
-    text-decoration: none;
-    color: #0066cc; /* 你可以根据主题修改链接颜色 */
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--external-link-color);
+  transition: color 0.2s ease;
 }
 
 a.external-link:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
-/* 使用伪元素 ::after 自动在链接后渲染小箭头 */
+/* 使用变量渲染图标 */
 a.external-link::after {
-    content: "";
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    /* 使用标准的 SVG 数据做背景图，免去引入额外字体图标库的麻烦 */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230066cc' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'%3E%3C/path%3E%3Cpolyline points='15 3 21 3 21 9'%3E%3C/polyline%3E%3Cline x1='10' y1='14' x2='21' y2='3'%3E%3C/line%3E%3C/svg%3E");
-    background-size: contain;
-    background-repeat: no-repeat;
-    vertical-align: middle;
-    transition: transform 0.2s ease;
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-image: var(--external-link-svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  transition: transform 0.2s ease;
 }
 
-/* 鼠标悬停时，小箭头微微向右上角位移，增加动效 */
 a.external-link:hover::after {
-    transform: translate(1px, -1px);
+  transform: translate(1px, -1px);
 }
 
 /* 外部链接样式-结束 */

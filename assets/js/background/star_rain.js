@@ -16,7 +16,7 @@ window.EffectStar = (function () {
         maxSpeed: 1.2,              // 最大下落速度
         wind: -0.2,                 // 水平飘移
         minSize: 2,                 // 星星最小尺寸
-        maxSize: 5,                 // 星星最大尺寸
+        maxSize: 7,                 // 星星最大尺寸
         opacity: 0.8,               // 星星基础不透明度
         shadowBlur: 6,              // 发光模糊半径
         hueRange: [200, 260],       // 色相范围（冰蓝到淡紫）
