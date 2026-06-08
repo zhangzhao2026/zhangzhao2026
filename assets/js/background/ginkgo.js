@@ -13,7 +13,7 @@ window.EffectGinkgo = (function () {
         maxSpeed: 1.2,               
         wind: 0.1,                   
         minSize: 15,                 // 银杏叶通常比枫叶稍大
-        maxSize: 30,                 
+        maxSize: 26,                 
         opacityRange: [0.4, 0.8],    
         rotationSpeed: 0.01,         
     };

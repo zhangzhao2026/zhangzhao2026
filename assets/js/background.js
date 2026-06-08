@@ -5,6 +5,7 @@
     const EFFECTS = {
         Sakura: { globalName: 'EffectSakura', path: '/assets/js/background/sakura.js' },
         Ginkgo:  { globalName: 'EffectGinkgo',  path: '/assets/js/background/ginkgo.js' },
+        IceCream: { globalName: 'EffectIceCream', path: '/assets/js/background/ice_cream.js' },
         Maple:  { globalName: 'EffectMaple',  path: '/assets/js/background/maple_leaf.js' },
         Snow:   { globalName: 'EffectSnow',   path: '/assets/js/background/snow.js' },
         Star:   { globalName: 'EffectStar',   path: '/assets/js/background/star_rain.js' },
@@ -29,7 +30,7 @@
     // 3. 强力清理区：一键拉闸（所有特效必须在此注册）
     // ==========================================
     function stopAllEffects() {
-        const names = ['EffectSakura', 'EffectGinkgo', 'EffectMaple', 'EffectSnow', 'EffectStar', 'EffectFirefly'];
+        const names = ['EffectSakura', 'EffectGinkgo', 'EffectIceCream', 'EffectMaple', 'EffectSnow', 'EffectStar', 'EffectFirefly'];
         names.forEach(name => {
             if (window[name] && window[name].stop) window[name].stop();
         });
@@ -84,7 +85,7 @@ function dispatchEffect() {
         // 白天根据节气调度
         switch (season) {
             case 'spring': loadAndStart('Sakura'); break;
-            case 'summer': loadAndStart('Ginkgo'); break;
+            case 'summer': loadAndStart('IceCream'); break;    // IceCream，Ginkgo
             case 'autumn': loadAndStart('Maple');  break;
             case 'winter': loadAndStart('Snow');   break;
         }
