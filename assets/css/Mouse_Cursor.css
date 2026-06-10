@@ -1,0 +1,66 @@
+/* Future Cursor Arrow - https://www.cursors-4u.com/cursor/future-cursor-arrow */
+/* * {
+  cursor: url('https://cdn.cursors-4u.net/previews/normal-9e607e2c-48.webp') 33 30, auto !important;
+} */
+/* End www.Cursors-4U.com Code */
+
+
+/* ==========================================================================
+   自定义鼠标指针控制
+   ========================================================================== */
+
+/* 1. 默认状态（普通页面空白处、文本段落等） */
+html, body, p, span, li {
+  cursor: url('https://cdn.cursors-4u.net/previews/normal-9e607e2c-48.webp') 33 30, auto;
+}
+
+/* 2. 可点击状态（链接、按钮、MkDocs的导航菜单、标签页等） */
+a, 
+button, 
+label, 
+summary, 
+.md-nav__link, 
+.md-tabs__link, 
+.md-icon,
+[role="button"] {
+  /* 请将下方的 URL 替换为你专属的“手型/点击”鼠标图片 */
+  cursor: url('https://cdn.cursors-4u.net/previews/pointer-或者你的点击指针.webp') 33 30, pointer !important;
+}
+
+/* 3. 文本输入状态（搜索框、代码块可复制区域等） */
+input, 
+textarea, 
+.md-search__input,
+code,
+pre {
+  /* 请将下方的 URL 替换为你专属的“文本I型”鼠标图片 */
+  cursor: url('https://cdn.cursors-4u.net/previews/text-或者你的文本指针.webp') 33 30, text !important;
+}
+
+/* 4. 禁用/不可点击状态（如置灰的按钮） */
+[disabled], 
+.disabled {
+  cursor: url('https://cdn.cursors-4u.net/previews/not-allowed-或者你的禁用指针.webp') 33 30, not-allowed !important;
+}
+
+
+/* ==========================================================================
+   5. 鼠标悬停在图片上的放大状态
+   ========================================================================== */
+
+/* 针对文章内容区域的所有图片 */
+.md-content img {
+  /* 【推荐方案】使用系统自带的、标准的放大镜指针，非常原生且丝滑 */
+  cursor: zoom-in;
+  
+  /* 【自定义方案】如果你有专门的放大镜图片，请取消注释下面这行，并替换 URL */
+  /* cursor: url('https://cdn.cursors-4u.net/previews/zoom-in-你的放大镜.webp') 33 30, zoom-in !important; */
+  
+  /* 稍微加一点点过渡动效，让鼠标放上去时图片有个轻微的视觉反馈（可选） */
+  transition: opacity 0.2s;
+}
+
+/* 鼠标悬停在图片上时，稍微变亮或变暗一点，提示用户“这玩意可以点” */
+.md-content img:hover {
+  opacity: 0.9;
+}
