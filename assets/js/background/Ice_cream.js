@@ -21,7 +21,12 @@ window.EffectIceCream = (function () {
     // 1. 初始化 5 张冰激凌图片的素材池
     const iceCreamImages = [];
     const svgNames = [
-
+        'ice_cream_1.svg',
+        'ice_cream_2.svg',
+        'ice_cream_3.svg',
+        'ice_cream_4.svg',
+        'ice_cream_5.svg',
+        'ice_cream_6.svg',
         'ice_cream_7.svg'
     ];
 
@@ -150,13 +155,33 @@ window.EffectIceCream = (function () {
             items.push(new IceCream(true));
         }
 
-        // 检查素材池里的第一张图片是否加载完成，以此决定如何切入动画循环
-        if (iceCreamImages[0] && iceCreamImages[0].complete) {
+        // 关键修复：必须等所有冰激凌图片都"落定"（加载成功 OR 失败）后再启播动画。
+        // 原本只等第一张图，但粒子在 reset() 里是随机从池中抽图的（1~7 号都可能拿到）；
+        // 本地 HTTP 几乎瞬时同到没问题，云端 HTTPS/HTTP2 下多图到达时间差被拉开，
+        // 会出现"动画在跑但 80% 粒子抽到的图都还在 loading，于是集体隐身"的窘境。
+        const totalImages = iceCreamImages.length;
+        if (totalImages === 0) {
             animate();
-        } else if (iceCreamImages[0]) {
-            iceCreamImages[0].onload = animate;
         } else {
-            animate();
+            let settledCount = 0;
+            const tryStart = () => {
+                if (settledCount >= totalImages) animate();
+            };
+            iceCreamImages.forEach(img => {
+                if (img.complete) {
+                    settledCount++;
+                } else {
+                    const onSettle = () => {
+                        settledCount++;
+                        img.onload = null;
+                        img.onerror = null;
+                        tryStart();
+                    };
+                    img.onload = onSettle;
+                    img.onerror = onSettle;
+                }
+            });
+            tryStart();
         }
     }
 
