@@ -93,7 +93,7 @@
         if (isNight) {
             loadAndStart('Star');
             if (season === 'summer') {
-                loadAndStart('IceCream');
+                loadAndStart('Ginkgo');
             }
             return;
         }
