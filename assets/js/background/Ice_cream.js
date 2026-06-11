@@ -19,7 +19,7 @@ window.EffectIceCream = (function () {
     };
 
     // 1. 初始化 5 张冰激凌图片的素材池
-const iceCreamImages = [];
+    const iceCreamImages = [];
     const svgNames = [
         'ice_cream_1.svg',
         'ice_cream_2.svg',
@@ -33,10 +33,7 @@ const iceCreamImages = [];
     // 2. 鲁棒路径探测与批量加载
     try {
         const currentScript = document.querySelector('script[src*="background.js"]');
-        
-        // 【核心修改】先通过 split('?')[0] 剥离掉可能存在的缓存后缀
-        const cleanSrc = currentScript ? currentScript.src.split('?')[0] : '';
-        const basePath = currentScript ? cleanSrc.replace('js/background.js', 'svg/') : 'assets/svg/';
+        const basePath = currentScript ? currentScript.src.replace('js/background.js', 'svg/') : 'assets/svg/';
         
         svgNames.forEach(name => {
             const img = new Image();
