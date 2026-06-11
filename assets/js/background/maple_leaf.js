@@ -9,7 +9,7 @@ window.EffectMaple = (function () {
 
     // ========== 可配置参数（保留你完美的枫叶参数） ==========
     const CONFIG = {
-        maxLeaves: 25,               // 同时存在的枫叶数量（保持优雅，不宜过多）
+        maxLeaves: 10,               // 同时存在的枫叶数量（保持优雅，不宜过多）
         minSpeed: 0.6,               // 最小下落速度 (px/帧)
         maxSpeed: 1.5,               // 最大下落速度
         wind: 0.2,                   // 基础水平风向（正值向右飘，负值向左）

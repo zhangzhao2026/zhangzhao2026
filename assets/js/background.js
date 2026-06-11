@@ -85,7 +85,7 @@ function dispatchEffect() {
         // 白天根据节气调度
         switch (season) {
             case 'spring': loadAndStart('Sakura'); break;
-            case 'summer': loadAndStart('Ginkgo'); break;    // IceCream，Ginkgo
+            case 'summer': loadAndStart('IceCream'); break;    // IceCream，Ginkgo
             case 'autumn': loadAndStart('Maple');  break;
             case 'winter': loadAndStart('Snow');   break;
         }

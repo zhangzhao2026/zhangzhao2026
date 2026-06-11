@@ -8,7 +8,7 @@ window.EffectGinkgo = (function () {
 
     // ========== 可配置参数 ==========
     const CONFIG = {
-        maxLeaves: 20,               // 银杏叶较大，数量稍微减少，避免遮挡内容
+        maxLeaves: 10,               // 银杏叶较大，数量稍微减少，避免遮挡内容
         minSpeed: 0.5,               
         maxSpeed: 1.2,               
         wind: 0.1,                   
