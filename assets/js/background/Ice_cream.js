@@ -21,13 +21,7 @@ window.EffectIceCream = (function () {
     // 1. 初始化 5 张冰激凌图片的素材池
     const iceCreamImages = [];
     const svgNames = [
-        'ice_cream_1.svg',
-        'ice_cream_2.svg',
-        'ice_cream_3.svg',
-        'ice_cream_4.svg',
-        'ice_cream_5.svg',
-        'ice_cream_6.svg',
-        'ice_cream_7.svg'
+        'ice_cream_1.svg'
     ];
 
     // 2. 鲁棒路径探测与批量加载
