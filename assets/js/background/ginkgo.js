@@ -1,21 +1,20 @@
 // 🌟 注册为全局大管家可调用的特工：EffectGinkgo
 window.EffectGinkgo = (function () {
-    
     let canvas = null;
     let ctx = null;
     let leaves = [];
-    let animationFrameId = null; 
+    let animationFrameId = null;
 
     // ========== 可配置参数 ==========
     const CONFIG = {
         maxLeaves: 10,               // 银杏叶较大，数量稍微减少，避免遮挡内容
-        minSpeed: 0.5,               
-        maxSpeed: 1.2,               
-        wind: 0.1,                   
+        minSpeed: 0.5,
+        maxSpeed: 1.2,
+        wind: 0.1,
         minSize: 15,                 // 银杏叶通常比枫叶稍大
-        maxSize: 26,                 
-        opacityRange: [0.4, 0.8],    
-        rotationSpeed: 0.01,         
+        maxSize: 26,
+        opacityRange: [0.4, 0.8],
+        rotationSpeed: 0.01,
     };
 
     function resize() {
@@ -26,28 +25,26 @@ window.EffectGinkgo = (function () {
         ctx.scale(dpr, dpr);
     }
 
-    // 智能根路径识别系统（与大管家对齐，彻底丢掉对具体脚本名称的依赖）
-    function getBaseUrl() {
-        const logo = document.querySelector('.md-logo') || document.querySelector('.md-header__button.md-logo') || document.querySelector('.md-header__link');
-        if (logo && logo.href) {
-            let url = logo.href;
-            return url.endsWith('/') ? url : url + '/';
-        }
-        const currentScript = document.currentScript || document.querySelector('script[src*="ginkgo"]') || document.querySelector('script[src*="background"]');
-        if (currentScript && currentScript.src) {
-            const src = currentScript.src.split('?')[0];
-            const match = src.match(/(.*\/)(assets|js)\//);
-            if (match && match[1]) {
-                return match[1];
-            }
-        }
-        let origin = window.location.origin;
-        return origin.endsWith('/') ? origin : origin + '/';
-    }
-
+    // 路径探测：自动查找 ginkgo.svg
+    // 关键：直接用 document.currentScript 锁定当前 ginkgo.js 自己的 src，
+    // 避免依赖 DOM 顺序或脆弱的字符串 replace，在 GitHub Pages 子路径下也能稳定工作。
     const leafImg = new Image();
-    // 直接从绝对根目录拼接目标 SVG 图片路径，稳如老狗，不管代码有没有被打包、压缩或改名
-    leafImg.src = getBaseUrl() + 'assets/svg/ginkgo.svg';
+    try {
+        const currentScript = document.currentScript;
+        if (currentScript && currentScript.src) {
+            // 例：https://user.github.io/repo/assets/js/background/ginkgo.js
+            //    -> https://user.github.io/repo/assets/svg/ginkgo.svg
+            const scriptSrc = currentScript.src.split('?')[0];
+            const baseUrl = scriptSrc.substring(0, scriptSrc.indexOf('assets/js/background/'));
+            leafImg.src = baseUrl + 'assets/svg/ginkgo.svg';
+        } else {
+            // 兜底：使用 querySelector 查找 background.js 再推算
+            const bgScript = document.querySelector('script[src*="background.js"]');
+            leafImg.src = bgScript ? bgScript.src.replace('js/background.js', 'svg/ginkgo.svg') : 'assets/svg/ginkgo.svg';
+        }
+    } catch (e) {
+        leafImg.src = 'assets/svg/ginkgo.svg';
+    }
 
     class Ginkgo {
         constructor(initial = false) { this.reset(initial); }
@@ -58,7 +55,7 @@ window.EffectGinkgo = (function () {
             this.y = initial ? Math.random() * window.innerHeight : -Math.random() * 30;
             this.size = CONFIG.minSize + Math.random() * (CONFIG.maxSize - CONFIG.minSize);
             this.speed = CONFIG.minSpeed + Math.random() * (CONFIG.maxSpeed - CONFIG.minSpeed);
-            this.wind = CONFIG.wind + (Math.random() - 0.5) * 0.2; 
+            this.wind = CONFIG.wind + (Math.random() - 0.5) * 0.2;
             this.rotation = Math.random() * Math.PI * 2;
             this.rotationDir = Math.random() < 0.5 ? -1 : 1;
             this.opacity = CONFIG.opacityRange[0] + Math.random() * (CONFIG.opacityRange[1] - CONFIG.opacityRange[0]);
@@ -88,7 +85,7 @@ window.EffectGinkgo = (function () {
     }
 
     function animate() {
-        if (!ctx) return; 
+        if (!ctx) return;
         ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
         for (const leaf of leaves) {
             leaf.update();
@@ -98,6 +95,7 @@ window.EffectGinkgo = (function () {
     }
 
     function start() {
+        // 关键点：ID 必须唯一，这里改为 'ginkgo-leaves-canvas'
         if (document.getElementById('ginkgo-leaves-canvas')) return;
 
         canvas = document.createElement('canvas');
