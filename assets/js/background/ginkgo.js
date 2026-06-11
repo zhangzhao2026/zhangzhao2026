@@ -26,11 +26,27 @@ window.EffectGinkgo = (function () {
         ctx.scale(dpr, dpr);
     }
 
-    // 路径探测：自动查找 ginkgo.svg
+    // 路径探测：自动查找 ginkgo.svg（升级防错版）
     const leafImg = new Image();
     try {
-        const currentScript = document.querySelector('script[src*="background.js"]');
-        leafImg.src = currentScript ? currentScript.src.replace('js/background.js', 'svg/ginkgo.svg') : 'assets/svg/ginkgo.svg';
+        // 1. 同时兼容包含 background.js 或 background.min.js 的情况
+        const currentScript = document.querySelector('script[src*="background.js"]') || 
+                              document.querySelector('script[src*="background.min.js"]');
+        
+        if (currentScript) {
+            // 2. 先剥离掉 GitHub 可能会追加的问号缓存尾巴（如 ?digest=xxxx）
+            let cleanSrc = currentScript.src.split('?')[0];
+            
+            // 3. 智能替换：不管打包后是 .js 还是 .min.js，精准替换为目标图片路径
+            if (cleanSrc.includes('js/background.min.js')) {
+                leafImg.src = cleanSrc.replace('js/background.min.js', 'svg/ginkgo.svg');
+            } else {
+                leafImg.src = cleanSrc.replace('js/background.js', 'svg/ginkgo.svg');
+            }
+        } else {
+            // 4. 如果实在找不到脚本，尝试从当前网站根域名动态寻找（防止子页面迷路）
+            leafImg.src = window.location.origin + '/assets/svg/ginkgo.svg';
+        }
     } catch (e) {
         leafImg.src = 'assets/svg/ginkgo.svg';
     }
