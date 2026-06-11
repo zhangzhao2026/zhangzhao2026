@@ -1,21 +1,34 @@
 (function () {
     // ==========================================
-    // 0. 路径大侦探：自动识别本地还是 GitHub 环境
+    // 0. 智能根路径识别系统（利用主题特性，完美通杀本地/GitHub/Vercel）
     // ==========================================
-    let assetRoot = "";
-    try {
-        const currentScript = document.currentScript || document.querySelector('script[src*="background.js"]');
-        if (currentScript) {
-            const src = currentScript.src.split('?')[0];
-            // 抓取到 assets/ 之前的所有动态完整路径
-            assetRoot = src.substring(0, src.indexOf('assets/'));
+    function getBaseUrl() {
+        // 1. 优先从 MkDocs 的 Logo 链接获取项目根网址（自带项目名，完美解决多环境部署差异）
+        const logo = document.querySelector('.md-logo') || document.querySelector('.md-header__button.md-logo') || document.querySelector('.md-header__link');
+        if (logo && logo.href) {
+            let url = logo.href;
+            return url.endsWith('/') ? url : url + '/';
         }
-    } catch (e) {
-        assetRoot = "/"; // 兜底
+        
+        // 2. 备选方案：从当前脚本自身的绝对路径反推
+        const currentScript = document.currentScript || document.querySelector('script[src*="background"]');
+        if (currentScript && currentScript.src) {
+            const src = currentScript.src.split('?')[0];
+            const match = src.match(/(.*\/)(assets|js)\//);
+            if (match && match[1]) {
+                return match[1];
+            }
+        }
+        
+        // 3. 终极兜底
+        let origin = window.location.origin;
+        return origin.endsWith('/') ? origin : origin + '/';
     }
 
+    const baseUrl = getBaseUrl();
+
     // ==========================================
-    // 1. 核心配置区：登记所有特工（去掉了死板的开头斜杠）
+    // 1. 核心配置区：登记所有特工
     // ==========================================
     const EFFECTS = {
         Sakura:   { globalName: 'EffectSakura',   path: 'assets/js/background/sakura.js' },
@@ -28,15 +41,14 @@
     };
 
     // ==========================================
-    // 2. 节气季节判断器（修复 10 月份对比失效的 Bug）
+    // 2. 节气季节判断器
     // ==========================================
     function getSeason() {
         const now = new Date();
         const m = now.getMonth() + 1;
         const d = now.getDate();
-        const score = m * 100 + d; // 变成纯数字，例如 6月11日 变成 611
+        const score = m * 100 + d; 
 
-        // 立春(204)、立夏(505)、立秋(807)、立冬(1107)
         if (score >= 204 && score < 505) return 'spring';
         if (score >= 505 && score < 807) return 'summer';
         if (score >= 807 && score < 1107) return 'autumn';
@@ -54,7 +66,7 @@
     }
 
     // ==========================================
-    // 4. 动态加载与启动引擎（融入动态路径）
+    // 4. 动态加载与启动引擎
     // ==========================================
     function loadAndStart(effectKey) {
         const effect = EFFECTS[effectKey];
@@ -67,7 +79,7 @@
         }
 
         // 拼接出绝对安全的完整 URL
-        const realPath = assetRoot + effect.path;
+        const realPath = baseUrl + effect.path;
 
         const script = document.createElement('script');
         script.src = realPath;
@@ -84,7 +96,7 @@
     // 5. 总指挥部：时令 + 时间调度
     // ==========================================
     function dispatchEffect() {
-        stopAllEffects(); // 先把所有在跑的特效强制下班
+        stopAllEffects(); 
 
         const hour = new Date().getHours();
         const isNight = (hour < 6 || hour >= 18);
@@ -98,7 +110,6 @@
             return;
         }
 
-        // 白天根据节气调度
         switch (season) {
             case 'spring': loadAndStart('Sakura'); break;
             case 'summer': loadAndStart('Ginkgo'); break; 
@@ -108,13 +119,11 @@
     }
 
     // ==========================================
-    // 6. 自动化监听（完美适配 MkDocs Material 换页）
+    // 6. 自动化监听
     // ==========================================
-    // 首次进入页面时启动
     if (document.readyState === 'complete') dispatchEffect();
     else window.addEventListener('load', dispatchEffect);
 
-    // 关键：针对 MkDocs Material 异步换页的官方专用监听
     if (typeof document.page$ !== "undefined") {
         document.page$.subscribe(function() {
             dispatchEffect(); 

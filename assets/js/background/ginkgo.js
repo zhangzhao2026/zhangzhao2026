@@ -26,31 +26,28 @@ window.EffectGinkgo = (function () {
         ctx.scale(dpr, dpr);
     }
 
-    // 路径探测：通过寻找自己（ginkgo.js）的路径来精准定位图片
-    const leafImg = new Image();
-    try {
-        // 1. 获取当前正在执行的 ginkgo.js 脚本节点（兼容打包压缩名）
-        const currentScript = document.currentScript || 
-                              document.querySelector('script[src*="ginkgo.js"]') || 
-                              document.querySelector('script[src*="ginkgo.min.js"]');
-        
-        if (currentScript) {
-            // 2. 剥离掉 GitHub 可能追加的问号缓存尾巴（如 ?digest=xxxx）
-            let cleanSrc = currentScript.src.split('?')[0];
-            
-            // 3. 根据大管家里配置的路径 'assets/js/background/ginkgo.js' 进行精准替换
-            if (cleanSrc.includes('js/background/ginkgo.min.js')) {
-                leafImg.src = cleanSrc.replace('js/background/ginkgo.min.js', 'svg/ginkgo.svg');
-            } else {
-                leafImg.src = cleanSrc.replace('js/background/ginkgo.js', 'svg/ginkgo.svg');
-            }
-        } else {
-            // 4. 极端兜底：如果连自己都找不到，直接用相对路径
-            leafImg.src = 'assets/svg/ginkgo.svg';
+    // 智能根路径识别系统（与大管家对齐，彻底丢掉对具体脚本名称的依赖）
+    function getBaseUrl() {
+        const logo = document.querySelector('.md-logo') || document.querySelector('.md-header__button.md-logo') || document.querySelector('.md-header__link');
+        if (logo && logo.href) {
+            let url = logo.href;
+            return url.endsWith('/') ? url : url + '/';
         }
-    } catch (e) {
-        leafImg.src = 'assets/svg/ginkgo.svg';
+        const currentScript = document.currentScript || document.querySelector('script[src*="ginkgo"]') || document.querySelector('script[src*="background"]');
+        if (currentScript && currentScript.src) {
+            const src = currentScript.src.split('?')[0];
+            const match = src.match(/(.*\/)(assets|js)\//);
+            if (match && match[1]) {
+                return match[1];
+            }
+        }
+        let origin = window.location.origin;
+        return origin.endsWith('/') ? origin : origin + '/';
     }
+
+    const leafImg = new Image();
+    // 直接从绝对根目录拼接目标 SVG 图片路径，稳如老狗，不管代码有没有被打包、压缩或改名
+    leafImg.src = getBaseUrl() + 'assets/svg/ginkgo.svg';
 
     class Ginkgo {
         constructor(initial = false) { this.reset(initial); }
@@ -101,7 +98,6 @@ window.EffectGinkgo = (function () {
     }
 
     function start() {
-        // 关键点：ID 必须唯一
         if (document.getElementById('ginkgo-leaves-canvas')) return;
 
         canvas = document.createElement('canvas');
