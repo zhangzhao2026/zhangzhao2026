@@ -53,6 +53,8 @@
     
       <link rel="stylesheet" href="../../../assets/css/picture.css">
     
+      <link rel="stylesheet" href="../../../assets/css/Mini-Toolbar.css">
+    
       <link rel="stylesheet" href="../../../assets/css/Mouse_trajectory.css">
     
       <link rel="stylesheet" href="../../../assets/css/Mouse_Cursor.css">
@@ -1020,6 +1022,8 @@
       
         
       
+        
+      
     
     
     
@@ -1263,6 +1267,34 @@
     
   
     2026-06-10
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../2026-06-11/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2026-06-11
   
 
     
@@ -1929,25 +1961,37 @@
 
   <h1>2026-06-09</h1>
 
-<p>08:16 让AI帮我优化随记APP的主界面。</p>
+<div class="admonition success">
+<p class="admonition-title">08:16 让AI帮我优化随记APP的主界面</p>
 <ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 把主界面左上角、右上角的按钮颜色和正上方的当前日期颜色改为<code>#43474e</code></li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 左右滑动内容、切换日期时，内容卡片附带逐个显现的动画<ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 通过筛选按钮更改筛选结果时，也会触发卡片显现动画</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 调整：把主界面左上角、右上角的按钮颜色和正上方的当前日期颜色改为<code>#43474e</code></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 新增：主界面左右滑动或通过日历<strong>切换日期</strong>时，内容卡片会有逐个显现的动画<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 新增：通过筛选按钮更改筛选条件时，触发卡片逐个显现的动画</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 修复：日期不变时，上下滑动页面，内容卡片会重复播放显现动画</li>
 </ul>
 </li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 筛选菜单、更多菜单、日历弹出后，四个角会出现尖锐的方形阴影然后消失，怎么回事？</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 卡片出现动作</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 点击筛选、菜单、日历后的弹出动画</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 为主界面正上方的日期的阴影背景新增圆角设计</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> 长按卡片的动画</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <strong>弹性物理动效 (Spring Physics)：</strong> 轮盘展开、卡片悬浮、日期切换的动画曲线，全部替换为带有微弹簧效果的贝塞尔曲线 (<code>cubic-bezier(0.34, 1.56, 0.64, 1)</code>)，复刻了 Android 丝滑的阻尼手感。<ul class="task-list">
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <strong>动效曲线 (Animation &amp; Transitions)：</strong> 调整了卡片交互、页面切出的贝塞尔曲线（<code>cubic-bezier(0.2, 0.8, 0.2, 1)</code>），让悬停、点击的反馈手感更具弹性与物理惯性。</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 新增：点击筛选按钮、更多菜单按钮、日历后，弹窗有弹出动画<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 修复：筛选菜单、更多菜单、日历弹出后，弹窗四周的阴影显现动画卡顿<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 移除：点击主界面正上方的日期出现的阴影背景</li>
 </ul>
 </li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> <strong>光影与材质 (Elevation &amp; Material)：</strong> 重构了阴影系统。为记录卡片加入了细腻的内发光（<code>inset</code> 阴影）和多层柔和外阴影，增强了界面的物理厚度感。</li>
-<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled/><span class="task-list-indicator"></span></label> <strong>色彩与焦点 (Colors &amp; Gradients)：</strong> 优化了全局背景的拟物环境光渐变；将 FAB 悬浮按钮升级为克制的微渐变色，使其作为核心行动点的视觉层级更加立体。</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 新增：长按卡片有反馈动画</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 改善：主界面内容卡片<ul class="task-list">
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 新增：内容卡片渐变色</li>
+<li class="task-list-item"><label class="task-list-control"><input type="checkbox" disabled checked/><span class="task-list-indicator"></span></label> 调整：缩小内容卡片圆角半径</li>
 </ul>
+</li>
+</ul>
+</div>
+<div class="admonition tips">
+<p class="admonition-title">prompt</p>
+<ul>
+<li><strong>弹性物理动效 (Spring Physics)：</strong> 轮盘展开、卡片悬浮、日期切换的动画曲线，全部替换为带有微弹簧效果的贝塞尔曲线 (<code>cubic-bezier(0.34, 1.56, 0.64, 1)</code>)，复刻了 Android 丝滑的阻尼手感。</li>
+<li><strong>动效曲线 (Animation &amp; Transitions)：</strong> 调整了卡片交互、页面切出的贝塞尔曲线（<code>cubic-bezier(0.2, 0.8, 0.2, 1)</code>），让悬停、点击的反馈手感更具弹性与物理惯性。</li>
+<li><strong>光影与材质 (Elevation &amp; Material)：</strong> 重构了阴影系统。为记录卡片加入了细腻的内发光（<code>inset</code> 阴影）和多层柔和外阴影，增强了界面的物理厚度感。</li>
+<li><strong>色彩与焦点 (Colors &amp; Gradients)：</strong> 优化了全局背景的拟物环境光渐变；将 FAB 悬浮按钮升级为克制的微渐变色，使其作为核心行动点的视觉层级更加立体。</li>
+</ul>
+</div>
 <div class="admonition success">
 <p class="admonition-title">成果</p>
 <ol>
@@ -1966,9 +2010,17 @@
 <p><a class="external-link" href="https://www.bilibili.com/video/BV1o5V56KEi1/" rel="noopener" target="_blank">暗影蜘蛛侠到底如何，基本是凯奇叔撑起来的</a>
 <a class="external-link" href="https://www.bilibili.com/video/BV1e77D6yEdV/" rel="noopener" target="_blank">凯奇叔饰演的暗影蛛，被女人坑的太惨了</a></p>
 <p>14:40 <a class="external-link" href="https://live.bilibili.com/22495291" rel="noopener" target="_blank">上班啦 - 妙妙子Official </a>终于开播了</p>
-<p>Trae账号使用受限，我注册了第二个账号。</p>
-<p><img alt="20260609_154206" class="card-img" src="https://cdn.jsdelivr.net/gh/zhangzhao2026/Image1/2026/20260609_154206.png" style="display: block; margin: 0 auto;" title="第一次给Trae用到限制使用，也有可能是新版本增加了免费用户的限制" width="60%" /></p>
+<p>Trae账号首次使用受限，我注册了第二个账号。</p>
+<p><img alt="20260609_154206" class="card-img" src="https://cdn.jsdelivr.net/gh/zhangzhao2026/Image1/2026/20260609_154206.png" style="display: block; margin: 0 auto;" title="有可能是版本更新增加的免费用户使用限制" width="60%" /></p>
 <p><a href="https://www.bilibili.com/video/BV19XEu6YEQg/">豆瓣8.3！它拍出全世界最不被理解的“绝症”，光中国就有100万患者</a></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>修复方案：直接让阴影出现，不需要逐渐显现的动画&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
 
 
 
@@ -2036,6 +2088,8 @@
         <script src="../../../assets/js/picture.js"></script>
       
         <script src="../../../assets/js/background.js"></script>
+      
+        <script src="../../../assets/js/Mini-Toolbar.js"></script>
       
         <script src="../../../assets/js/Mouse_trajectory.js"></script>
       

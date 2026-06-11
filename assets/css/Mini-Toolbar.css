@@ -1,0 +1,206 @@
+/* ==========================================================================
+   1. 主工具栏（极致优化版：现代悬浮、微光外框、富有呼吸感）
+   ========================================================================== */
+.selection-toolbar {
+  position: absolute;
+  /* 1. 改为半透明深色，并加入毛玻璃，使其融入 MkDocs 背景但保持独立 */
+  background-color: rgba(26, 29, 36, 0.92); 
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  
+  color: #ffffff;
+  /* 2. 优化内边距，提供更好的视觉呼吸感 */
+  padding: 6px 10px;
+  border-radius: 10px; /* 更圆润现代的圆角 */
+  
+  /* 3. 升级为双层环绕立体阴影，质感极强 */
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+    0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  
+  display: flex;
+  align-items: center;
+  gap: 8px; /* 增大按钮间的间距，防止误触 */
+  z-index: 1000;
+  visibility: hidden;
+  opacity: 0;
+  
+  /* 4. 优化淡入淡出曲线，使其更加丝滑 */
+  transition: opacity 0.15s cubic-bezier(0.215, 0.610, 0.355, 1), 
+              visibility 0.15s;
+  pointer-events: auto;
+  
+  /* 5. 精致的微光边框 */
+  border: 1px solid rgba(255, 255, 255, 0.08); 
+}
+
+/* 激活显示状态 */
+.selection-toolbar.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* 小三角：与主面板完美融合，并附带同样的透明度 */
+.selection-toolbar::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0;
+  border-style: solid;
+  border-color: rgba(26, 29, 36, 0.92) transparent;
+  display: block;
+  width: 0;
+}
+
+/* 主工具栏按钮优化 */
+.selection-toolbar-btn {
+  background: none;
+  border: none;
+  color: #a0aec0; /* 默认色调调柔和，增加对比空间 */
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative; 
+  
+  /* 6. 引入贝塞尔曲线，让悬浮动画带有微妙的弹性感 */
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), 
+              color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 按钮悬浮交互：背景微亮、图标变白、且有轻微上浮或放大的动效 */
+.selection-toolbar-btn:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff; 
+  transform: scale(1.05); /* 鼠标放上去时，图标微微放大 5%，极具灵动感 */
+}
+
+/* 图标基础微调 */
+.selection-toolbar-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.2px; /* 略微加粗图标线条，使其在深色背景下更清晰 */
+  stroke: currentColor;
+}
+
+/* 复制按钮的上方 Tooltip 提示优化 */
+.selection-toolbar-btn[data-tooltip]::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 140%; /* 稍微拉高一点，避免贴得太紧 */
+  left: 50%;
+  transform: translateX(-50%) scale(0.95); /* 配合淡入带有微微放大的动画 */
+  background-color: #0f1115;
+  color: #e2e8f0;
+  padding: 5px 9px;
+  font-size: 11px;
+  font-weight: 500;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  pointer-events: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.selection-toolbar-btn[data-tooltip]:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) scale(1); /* 恢复正常大小，形成优雅的生长动画 */
+}
+
+/* ==========================================================================
+   2. 搜索子菜单（第二层级：完美适配新主栏）
+   ========================================================================== */
+.selection-toolbar-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-sub-menu {
+  position: absolute;
+  left: 120%; /* 顺应主栏间距，稍微拉开 */            
+  top: -6px;
+  background-color: rgba(30, 34, 42, 0.96); 
+  backdrop-filter: blur(10px);               
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+  padding: 6px;
+  
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 4px;
+  min-width: 200px; 
+  
+  visibility: hidden;
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: opacity 0.15s cubic-bezier(0.215, 0.610, 0.355, 1), 
+              transform 0.15s cubic-bezier(0.215, 0.610, 0.355, 1), 
+              visibility 0.15s;
+}
+
+.selection-toolbar-search-wrapper:hover .search-sub-menu {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.search-sub-item {
+  color: #cbd5e1;         
+  font-size: 12px;      
+  font-weight: 400;       
+  padding: 6px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.12s, color 0.12s;
+}
+
+.search-sub-item:hover {
+  background-color: var(--md-primary-fg-color); 
+  color: var(--md-primary-bg-color, #ffffff);
+}
+
+/* ==========================================================================
+   3. 右上角全局通知气泡（保持原样）
+   ========================================================================== */
+.toast-notification-container {
+  position: fixed;
+  top: 80px; 
+  right: 20px;
+  z-index: 2000; 
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.toast-notification {
+  background-color: var(--md-primary-fg-color); 
+  color: var(--md-primary-bg-color, #ffffff); 
+  padding: 10px 18px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.1); 
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateX(120%); 
+  opacity: 0;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+}
+
+.toast-notification.show {
+  transform: translateX(0);
+  opacity: 1;
+}
