@@ -5,7 +5,7 @@ window.EffectIceCream = (function () {
     let items = [];
     let animationFrameId = null;
 
-    // ========== 可配置参数（延续你优雅的下落物理参数） ==========
+    // ========== 可配置参数 ==========
     const CONFIG = {
         maxItems: 10,                // 同时存在的冰激凌数量
         minSpeed: 0.6,               // 最小下落速度 (px/帧)
@@ -17,16 +17,8 @@ window.EffectIceCream = (function () {
         rotationSpeed: 0.012,        // 旋转速度
     };
 
-    function resize() {
-        if (!canvas || !ctx) return;
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = window.innerWidth * dpr;
-        canvas.height = window.innerHeight * dpr;
-        ctx.scale(dpr, dpr);
-    }
-
     // 路径探测：自动查找 ice_cream_1.svg
-    // 关键：直接用 document.currentScript 锁定当前 ice_cream.js 自己的 src，
+    // 关键：直接用 document.currentScript 锁定当前 js 自己的 src，
     // 避免依赖 DOM 顺序或脆弱的字符串 replace，在 GitHub Pages 子路径下也能稳定工作。
     const iceCreamImg = new Image();
     try {
@@ -46,11 +38,16 @@ window.EffectIceCream = (function () {
         iceCreamImg.src = 'assets/svg/ice_cream_1.svg';
     }
 
-    // 冰激凌粒子类
+    function resize() {
+        if (!canvas || !ctx) return;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        ctx.scale(dpr, dpr);
+    }
+
     class IceCream {
-        constructor(initial = false) {
-            this.reset(initial);
-        }
+        constructor(initial = false) { this.reset(initial); }
 
         reset(initial = false) {
             if (!canvas) return;
@@ -62,7 +59,7 @@ window.EffectIceCream = (function () {
             this.rotation = Math.random() * Math.PI * 2;
             this.rotationDir = Math.random() < 0.5 ? -1 : 1;
             this.opacity = CONFIG.opacityRange[0] + Math.random() * (CONFIG.opacityRange[1] - CONFIG.opacityRange[0]);
-            this.swingSpeed = 0.015 + Math.random() * 0.015;
+            this.swingSpeed = 0.015 + Math.random() * 0.01;
             this.swingOffset = Math.random() * 100;
         }
 
@@ -90,16 +87,15 @@ window.EffectIceCream = (function () {
     function animate() {
         if (!ctx) return;
         ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-
         for (const item of items) {
             item.update();
             item.draw(ctx);
         }
-
         animationFrameId = requestAnimationFrame(animate);
     }
 
     function start() {
+        // 关键点：ID 必须唯一，这里改为 'ice-cream-canvas'
         if (document.getElementById('ice-cream-canvas')) return;
 
         canvas = document.createElement('canvas');

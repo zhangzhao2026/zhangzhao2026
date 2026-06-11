@@ -25,7 +25,7 @@ window.EffectGinkgo = (function () {
         ctx.scale(dpr, dpr);
     }
 
-    // 路径探测：自动查找 ice_cream_1.svg
+    // 路径探测：自动查找 ginkgo.svg
     // 关键：直接用 document.currentScript 锁定当前 ginkgo.js 自己的 src，
     // 避免依赖 DOM 顺序或脆弱的字符串 replace，在 GitHub Pages 子路径下也能稳定工作。
     const leafImg = new Image();
@@ -33,17 +33,17 @@ window.EffectGinkgo = (function () {
         const currentScript = document.currentScript;
         if (currentScript && currentScript.src) {
             // 例：https://user.github.io/repo/assets/js/background/ginkgo.js
-            //    -> https://user.github.io/repo/assets/svg/ice_cream_1.svg
+            //    -> https://user.github.io/repo/assets/svg/ginkgo.svg
             const scriptSrc = currentScript.src.split('?')[0];
             const baseUrl = scriptSrc.substring(0, scriptSrc.indexOf('assets/js/background/'));
-            leafImg.src = baseUrl + 'assets/svg/ice_cream_1.svg';
+            leafImg.src = baseUrl + 'assets/svg/ginkgo.svg';
         } else {
             // 兜底：使用 querySelector 查找 background.js 再推算
             const bgScript = document.querySelector('script[src*="background.js"]');
-            leafImg.src = bgScript ? bgScript.src.replace('js/background.js', 'svg/ice_cream_1.svg') : 'assets/svg/ice_cream_1.svg';
+            leafImg.src = bgScript ? bgScript.src.replace('js/background.js', 'svg/ginkgo.svg') : 'assets/svg/ginkgo.svg';
         }
     } catch (e) {
-        leafImg.src = 'assets/svg/ice_cream_1.svg';
+        leafImg.src = 'assets/svg/ginkgo.svg';
     }
 
     class Ginkgo {
