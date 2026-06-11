@@ -101,7 +101,7 @@
         // 白天根据节气调度
         switch (season) {
             case 'spring': loadAndStart('Sakura'); break;
-            case 'summer': loadAndStart('Sakura'); break;         // Ginkgo ， IceCream
+            case 'summer': loadAndStart('IceCream'); break;         // Ginkgo ， IceCream
             case 'autumn': loadAndStart('Maple');  break;
             case 'winter': loadAndStart('Snow');   break;
         }
