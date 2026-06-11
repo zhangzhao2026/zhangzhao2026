@@ -17,11 +17,23 @@ window.EffectSnow = (function () {
         opacityRange: [0.3, 0.85],
     };
 
-    // 路径探测
+    // 路径探测：自动加载 snow.svg
+    // 关键：用 document.currentScript 锁定当前 snow.js 自己的 src，
+    // 避免依赖 DOM 顺序或脆弱的字符串 replace，在 GitHub Pages 子路径下也能稳定工作。
     const snowImg = new Image();
     try {
-        const currentScript = document.querySelector('script[src*="background.js"]');
-        snowImg.src = currentScript ? currentScript.src.replace('js/background.js', 'svg/snow.svg') : 'assets/svg/snow.svg';
+        const currentScript = document.currentScript;
+        if (currentScript && currentScript.src) {
+            // 例：https://user.github.io/repo/assets/js/background/snow.js
+            //    -> https://user.github.io/repo/assets/svg/snow.svg
+            const scriptSrc = currentScript.src.split('?')[0];
+            const baseUrl = scriptSrc.substring(0, scriptSrc.indexOf('assets/js/background/'));
+            snowImg.src = baseUrl + 'assets/svg/snow.svg';
+        } else {
+            // 兜底：使用 querySelector 查找 background.js 再推算
+            const bgScript = document.querySelector('script[src*="background.js"]');
+            snowImg.src = bgScript ? bgScript.src.replace('js/background.js', 'svg/snow.svg') : 'assets/svg/snow.svg';
+        }
     } catch (e) {
         snowImg.src = 'assets/svg/snow.svg';
     }

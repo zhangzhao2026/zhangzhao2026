@@ -31,10 +31,22 @@ window.EffectIceCream = (function () {
     ];
 
     // 2. 鲁棒路径探测与批量加载
+    // 关键：用 document.currentScript 锁定当前 ice_cream.js 自己的 src，
+    // 避免依赖 DOM 顺序或脆弱的字符串 replace，在 GitHub Pages 子路径下也能稳定工作。
     try {
-        const currentScript = document.querySelector('script[src*="background.js"]');
-        const basePath = currentScript ? currentScript.src.replace('js/background.js', 'svg/') : 'assets/svg/';
-        
+        let basePath;
+        const currentScript = document.currentScript;
+        if (currentScript && currentScript.src) {
+            // 例：https://.../assets/js/background/ice_cream.js -> https://.../assets/svg/
+            const scriptSrc = currentScript.src.split('?')[0];
+            const baseUrl = scriptSrc.substring(0, scriptSrc.indexOf('assets/js/background/'));
+            basePath = baseUrl + 'assets/svg/';
+        } else {
+            // 兜底：使用 querySelector 查找 background.js 再推算
+            const bgScript = document.querySelector('script[src*="background.js"]');
+            basePath = bgScript ? bgScript.src.replace('js/background.js', 'svg/') : 'assets/svg/';
+        }
+
         svgNames.forEach(name => {
             const img = new Image();
             img.src = basePath + name;

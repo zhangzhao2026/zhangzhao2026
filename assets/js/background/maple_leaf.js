@@ -28,14 +28,22 @@ window.EffectMaple = (function () {
         ctx.scale(dpr, dpr); // 缩放绘图上下文以匹配物理像素
     }
 
-    // 鲁棒路径：如果探测失败，回退到当前页面相对路径而不是绝对根路径
+    // 鲁棒路径：自动匹配目录并加载 maple_leaf.svg
+    // 关键：用 document.currentScript 锁定当前 maple_leaf.js 自己的 src，
+    // 避免依赖 DOM 顺序或脆弱的字符串 replace，在 GitHub Pages 子路径下也能稳定工作。
     const leafImg = new Image();
     try {
-        const currentScript = document.querySelector('script[src*="background.js"]');
-        if (currentScript) {
-            leafImg.src = currentScript.src.replace('js/background.js', 'svg/maple_leaf.svg');
+        const currentScript = document.currentScript;
+        if (currentScript && currentScript.src) {
+            // 例：https://user.github.io/repo/assets/js/background/maple_leaf.js
+            //    -> https://user.github.io/repo/assets/svg/maple_leaf.svg
+            const scriptSrc = currentScript.src.split('?')[0];
+            const baseUrl = scriptSrc.substring(0, scriptSrc.indexOf('assets/js/background/'));
+            leafImg.src = baseUrl + 'assets/svg/maple_leaf.svg';
         } else {
-            leafImg.src = 'assets/svg/maple_leaf.svg'; 
+            // 兜底：使用 querySelector 查找 background.js 再推算
+            const bgScript = document.querySelector('script[src*="background.js"]');
+            leafImg.src = bgScript ? bgScript.src.replace('js/background.js', 'svg/maple_leaf.svg') : 'assets/svg/maple_leaf.svg';
         }
     } catch (e) {
         leafImg.src = 'assets/svg/maple_leaf.svg';
