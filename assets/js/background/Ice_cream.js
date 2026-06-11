@@ -18,41 +18,65 @@ window.EffectIceCream = (function () {
         rotationSpeed: 0.012,        // 旋转速度
     };
 
-    // 1. 初始化 5 张冰激凌图片的素材池
-    const iceCreamImages = [];
-    const svgNames = [
-        'ice_cream_1.svg'
-    ];
+    // 1. 初始化 7 张冰激凌图片的素材池
+    // 关键：完全照搬 sakura.js 的写法（sakura.js 是 const sakuraImg = new Image()），
+    // 每个 SVG 一一对应一个独立的 Image 对象 + 独立的 src 赋值，
+    // 这样任何一张图加载失败都不会影响其他图，路径探测也跟 sakura.js 一模一样。
+    const ice_cream_1 = new Image();
+    const ice_cream_2 = new Image();
+    const ice_cream_3 = new Image();
+    const ice_cream_4 = new Image();
+    const ice_cream_5 = new Image();
+    const ice_cream_6 = new Image();
+    const ice_cream_7 = new Image();
 
-    // 2. 鲁棒路径探测与批量加载
+    // 鲁棒路径：完全照搬 sakura.js 的写法
     // 关键：用 document.currentScript 锁定当前 ice_cream.js 自己的 src，
     // 避免依赖 DOM 顺序或脆弱的字符串 replace，在 GitHub Pages 子路径下也能稳定工作。
+    // 防缓存：加 ?v= 时间戳，确保云端部署后浏览器能拉到最新资源。
+    const cacheBuster = '?v=' + Date.now();
     try {
-        let basePath;
         const currentScript = document.currentScript;
         if (currentScript && currentScript.src) {
-            // 例：https://.../assets/js/background/ice_cream.js -> https://.../assets/svg/
+            // 例：https://user.github.io/repo/assets/js/background/ice_cream.js
+            //    -> https://user.github.io/repo/assets/svg/ice_cream_X.svg
             const scriptSrc = currentScript.src.split('?')[0];
             const baseUrl = scriptSrc.substring(0, scriptSrc.indexOf('assets/js/background/'));
-            basePath = baseUrl + 'assets/svg/';
+            ice_cream_1.src = baseUrl + 'assets/svg/ice_cream_1.svg' + cacheBuster;
+            ice_cream_2.src = baseUrl + 'assets/svg/ice_cream_2.svg' + cacheBuster;
+            ice_cream_3.src = baseUrl + 'assets/svg/ice_cream_3.svg' + cacheBuster;
+            ice_cream_4.src = baseUrl + 'assets/svg/ice_cream_4.svg' + cacheBuster;
+            ice_cream_5.src = baseUrl + 'assets/svg/ice_cream_5.svg' + cacheBuster;
+            ice_cream_6.src = baseUrl + 'assets/svg/ice_cream_6.svg' + cacheBuster;
+            ice_cream_7.src = baseUrl + 'assets/svg/ice_cream_7.svg' + cacheBuster;
         } else {
             // 兜底：使用 querySelector 查找 background.js 再推算
             const bgScript = document.querySelector('script[src*="background.js"]');
-            basePath = bgScript ? bgScript.src.replace('js/background.js', 'svg/') : 'assets/svg/';
+            const baseUrl = bgScript ? bgScript.src.replace('js/background.js', 'svg/') : 'assets/svg/';
+            ice_cream_1.src = baseUrl + 'ice_cream_1.svg' + cacheBuster;
+            ice_cream_2.src = baseUrl + 'ice_cream_2.svg' + cacheBuster;
+            ice_cream_3.src = baseUrl + 'ice_cream_3.svg' + cacheBuster;
+            ice_cream_4.src = baseUrl + 'ice_cream_4.svg' + cacheBuster;
+            ice_cream_5.src = baseUrl + 'ice_cream_5.svg' + cacheBuster;
+            ice_cream_6.src = baseUrl + 'ice_cream_6.svg' + cacheBuster;
+            ice_cream_7.src = baseUrl + 'ice_cream_7.svg' + cacheBuster;
         }
-
-        svgNames.forEach(name => {
-            const img = new Image();
-            img.src = basePath + name;
-            iceCreamImages.push(img);
-        });
     } catch (e) {
-        svgNames.forEach(name => {
-            const img = new Image();
-            img.src = 'assets/svg/' + name;
-            iceCreamImages.push(img);
-        });
+        // 兜底：相对路径（依赖当前页面的 base href，理论上不优，但绝不会让动画卡死）
+        ice_cream_1.src = 'assets/svg/ice_cream_1.svg' + cacheBuster;
+        ice_cream_2.src = 'assets/svg/ice_cream_2.svg' + cacheBuster;
+        ice_cream_3.src = 'assets/svg/ice_cream_3.svg' + cacheBuster;
+        ice_cream_4.src = 'assets/svg/ice_cream_4.svg' + cacheBuster;
+        ice_cream_5.src = 'assets/svg/ice_cream_5.svg' + cacheBuster;
+        ice_cream_6.src = 'assets/svg/ice_cream_6.svg' + cacheBuster;
+        ice_cream_7.src = 'assets/svg/ice_cream_7.svg' + cacheBuster;
     }
+
+    // 把所有图片打包成数组，方便在 reset() 中随机抽取
+    const iceCreamImages = [
+        ice_cream_1, ice_cream_2, ice_cream_3, ice_cream_4,
+        ice_cream_5, ice_cream_6, ice_cream_7
+    ];
 
     function resize() {
         if (!canvas || !ctx) return;
