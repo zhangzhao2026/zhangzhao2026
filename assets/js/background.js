@@ -91,7 +91,7 @@
         const season = getSeason();
 
         if (isNight) {
-            loadAndStart('Star');
+            loadAndStart('IceCream');       // Star
             if (season === 'summer') {
                 loadAndStart('Firefly');
             }
