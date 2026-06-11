@@ -26,26 +26,27 @@ window.EffectGinkgo = (function () {
         ctx.scale(dpr, dpr);
     }
 
-    // 路径探测：自动查找 ginkgo.svg（升级防错版）
+    // 路径探测：通过寻找自己（ginkgo.js）的路径来精准定位图片
     const leafImg = new Image();
     try {
-        // 1. 同时兼容包含 background.js 或 background.min.js 的情况
-        const currentScript = document.querySelector('script[src*="background.js"]') || 
-                              document.querySelector('script[src*="background.min.js"]');
+        // 1. 获取当前正在执行的 ginkgo.js 脚本节点（兼容打包压缩名）
+        const currentScript = document.currentScript || 
+                              document.querySelector('script[src*="ginkgo.js"]') || 
+                              document.querySelector('script[src*="ginkgo.min.js"]');
         
         if (currentScript) {
-            // 2. 先剥离掉 GitHub 可能会追加的问号缓存尾巴（如 ?digest=xxxx）
+            // 2. 剥离掉 GitHub 可能追加的问号缓存尾巴（如 ?digest=xxxx）
             let cleanSrc = currentScript.src.split('?')[0];
             
-            // 3. 智能替换：不管打包后是 .js 还是 .min.js，精准替换为目标图片路径
-            if (cleanSrc.includes('js/background.min.js')) {
-                leafImg.src = cleanSrc.replace('js/background.min.js', 'svg/ginkgo.svg');
+            // 3. 根据大管家里配置的路径 'assets/js/background/ginkgo.js' 进行精准替换
+            if (cleanSrc.includes('js/background/ginkgo.min.js')) {
+                leafImg.src = cleanSrc.replace('js/background/ginkgo.min.js', 'svg/ginkgo.svg');
             } else {
-                leafImg.src = cleanSrc.replace('js/background.js', 'svg/ginkgo.svg');
+                leafImg.src = cleanSrc.replace('js/background/ginkgo.js', 'svg/ginkgo.svg');
             }
         } else {
-            // 4. 如果实在找不到脚本，尝试从当前网站根域名动态寻找（防止子页面迷路）
-            leafImg.src = window.location.origin + '/assets/svg/ginkgo.svg';
+            // 4. 极端兜底：如果连自己都找不到，直接用相对路径
+            leafImg.src = 'assets/svg/ginkgo.svg';
         }
     } catch (e) {
         leafImg.src = 'assets/svg/ginkgo.svg';
@@ -100,7 +101,7 @@ window.EffectGinkgo = (function () {
     }
 
     function start() {
-        // 关键点：ID 必须唯一，这里改为 'ginkgo-leaves-canvas'
+        // 关键点：ID 必须唯一
         if (document.getElementById('ginkgo-leaves-canvas')) return;
 
         canvas = document.createElement('canvas');
