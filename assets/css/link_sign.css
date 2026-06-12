@@ -1,0 +1,47 @@
+/* ==========================================================================
+  外部链接样式
+========================================================================== */
+
+/* 定义颜色变量 */
+:root {
+  --external-link-color: #0066cc; /* 日间模式颜色 */
+  --external-link-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230066cc' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'%3E%3C/path%3E%3Cpolyline points='15 3 21 3 21 9'%3E%3C/polyline%3E%3Cline x1='10' y1='14' x2='21' y2='3'%3E%3C/line%3E%3C/svg%3E");
+}
+
+/* 夜间模式适配：通常 Material 主题使用 data-md-color-scheme 属性 */
+[data-md-color-scheme="slate"] {
+  --external-link-color: #66b3ff; /* 夜间模式更柔和的蓝色 */
+  --external-link-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2366b3ff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6'%3E%3C/path%3E%3Cpolyline points='15 3 21 3 21 9'%3E%3C/polyline%3E%3Cline x1='10' y1='14' x2='21' y2='3'%3E%3C/line%3E%3C/svg%3E");
+}
+
+/* 外部链接基础样式 */
+a.external-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+  color: var(--external-link-color);
+  transition: color 0.2s ease;
+}
+
+a.external-link:hover {
+  text-decoration: underline;
+}
+
+/* 使用变量渲染图标 */
+a.external-link::after {
+  content: "";
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background-image: var(--external-link-svg);
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  transition: transform 0.2s ease;
+}
+
+a.external-link:hover::after {
+  transform: translate(1px, -1px);
+}
+

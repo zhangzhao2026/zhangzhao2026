@@ -10,26 +10,36 @@ window.EffectIceCream = (function () {
         maxItems: 10,                // 同时存在的冰激凌数量
         minSpeed: 0.6,               // 最小下落速度 (px/帧)
         maxSpeed: 1.5,               // 最大下落速度
-        wind: 0.1,                   // 水平风向
+        wind: 0.1,                   // 稍微降低一点水平风向，让冰激凌看起来更自然
         minSize: 20,                 // 冰激凌最小尺寸 (px)
         maxSize: 30,                 // 冰激凌最大尺寸 (px)
-        opacityRange: [0.4, 0.75],   // 不透明度范围
+        opacityRange: [0.4, 0.75],   // 不透明度范围，保证色彩不过于刺眼
         rotationSpeed: 0.012,        // 旋转速度
-        svgCount: 7                  // 🌟 你的 SVG 文件总数（例如 ice_cream_1.svg 到 ice_cream_3.svg）
+        // 🌟 自定义图片文件名列表：支持任意命名格式，直接在这里追加或修改文件名即可！
+        svgFiles: [
+            'ice_cream_1.svg',
+            'ice_cream_3.svg',
+            'ice_cream_4.svg',
+            'ice_cream_5.svg',
+            'ice_cream_7.svg'
+        ]
     };
 
     // 🌟 可用图片池：网络好的时候塞入多个，网络差时只塞入成功加载的
     let loadedImages = [];
 
-    // ========== 路径探测与多图预加载 (完美保留原逻辑) ==========
+    // ========== 路径探测与多图预加载 (完美保留原路径逻辑) ==========
     function initImages() {
         let baseUrl = 'assets/';
         try {
             const currentScript = document.currentScript;
             if (currentScript && currentScript.src) {
+                // 例：https://user.github.io/repo/assets/js/background/ice_cream.js
+                //    -> https://user.github.io/repo/assets/
                 const scriptSrc = currentScript.src.split('?')[0];
                 baseUrl = scriptSrc.substring(0, scriptSrc.indexOf('assets/js/background/')) + 'assets/';
             } else {
+                // 兜底：使用 querySelector 查找 background.js 再推算
                 const bgScript = document.querySelector('script[src*="background.js"]');
                 baseUrl = bgScript ? bgScript.src.replace('js/background.js', '') : 'assets/';
             }
@@ -37,8 +47,8 @@ window.EffectIceCream = (function () {
             baseUrl = 'assets/';
         }
 
-        // 循环加载所有 SVG
-        for (let i = 1; i <= CONFIG.svgCount; i++) {
+        // 🌟 遍历配置中的文件名数组进行加载
+        CONFIG.svgFiles.forEach(fileName => {
             const img = new Image();
             img.onload = function() {
                 // 加载成功，放入可用池
@@ -47,11 +57,11 @@ window.EffectIceCream = (function () {
                 }
             };
             img.onerror = function() {
-                console.warn(`[EffectIceCream] 无法加载图片，可能网络较差或文件不存在: ice_cream_${i}.svg`);
+                console.warn(`[EffectIceCream] 无法加载图片，可能网络较差或文件不存在: ${fileName}`);
             };
-            // 拼接路径，依然是 原逻辑的 baseUrl + 'svg/ice_cream_x.svg'
-            img.src = baseUrl + `svg/ice_cream_${i}.svg`;
-        }
+            // 拼接路径，依然是 原逻辑的 baseUrl + 'svg/' + 自定义文件名
+            img.src = baseUrl + 'svg/' + fileName;
+        });
     }
 
     // 执行图片初始化
@@ -67,7 +77,7 @@ window.EffectIceCream = (function () {
 
     class IceCream {
         constructor(initial = false) { 
-            this.img = null; // 🌟 当前粒子绑定的图片
+            this.img = null; // 🌟 当前粒子绑定的图片对象
             this.reset(initial); 
         }
 
