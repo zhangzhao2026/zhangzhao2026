@@ -1,34 +1,5 @@
-/* 全局字体：优先 CDN 字体（和你yml完全匹配） → 兜底本地 → 系统 */
-body,
-.md-typeset,
-.md-nav,
-.md-nav__link,
-.md-header,
-.md-footer,
-h1, h2, h3, h4, h5, h6,
-p, a, li, span, code, pre {
-    font-family:
-        "LXGW WenKai",       /* ① 你真正的CDN字体（正确！） */
-        "LXGWWenKaiMonoScreen", /* ② 兜底本地字体 */
-        sans-serif !important;
-    font-display: swap;
-}
 
 
-
-/* 你原来的字号样式 */
-p {
-    font-size: 18px;
-}
-span {
-    font-size: 1.1em;
-}
-.md-nav__title {
-    font-size: 1.2em;
-}
-.md-nav__item--active {
-    font-size: 1.15em;
-}
 
 
 

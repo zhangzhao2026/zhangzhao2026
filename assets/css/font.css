@@ -1,0 +1,125 @@
+/* 全局字体：优先 CDN 字体（和你yml完全匹配） → 兜底本地 → 系统 */
+CSS
+/* ==========================================================================
+   1. 全局字体配置（完全保留你的字体应用逻辑，仅移除无效属性）
+   ========================================================================== */
+body,
+.md-typeset,
+.md-nav,
+.md-nav__link,
+.md-header,
+.md-footer,
+h1, h2, h3, h4, h5, h6,
+p, a, li, span, code, pre {
+    font-family:
+        "LXGW WenKai",           /* ① CDN 字体 */
+        "LXGWWenKaiMonoScreen", /* ② 兜底本地字体 */
+        sans-serif !important;
+    /* font-display: swap; */
+}
+
+
+
+
+
+/* ==========================================================================
+   2. 字号与排版优化（限制作用域，防止样式污染与嵌套冲突）
+   ========================================================================== */
+
+/* 正文段落：转换为弹性 rem 单位（约等于原 18px），并在移动端自动适配 */
+.md-typeset p {
+    font-size: 18px; 
+}
+
+/* 正文内的 span：限制在 .md-typeset 内，防止影响全局组件，改用 rem 避免 em 嵌套放大 */
+.md-typeset span {
+    font-size: 1.05rem; 
+}
+
+/* 左侧/右侧导航栏标题 */
+.md-nav__title {
+    font-size: 1.2em;
+}
+
+/* 激活状态的导航菜单项 */
+.md-nav__item--active > .md-nav__link {
+    font-size: 1.15em;
+    font-weight: 700; /* 额外建议：激活项加粗，视觉提示更明显，可根据喜好决定是否保留 */
+}
+
+
+
+
+/* 你原来的字号样式 */
+/* p {
+    font-size: 18px;
+}
+span {
+    font-size: 1.1em;
+}
+.md-nav__title {
+    font-size: 1.2em;
+}
+.md-nav__item--active {
+    font-size: 1.15em;
+} */
+
+
+
+
+
+/* ==========================================================================
+   3. 文章正文标题样式定制（H1 ~ H5：字号、加粗与颜色）
+   ========================================================================== */
+
+/* H1 标题：使用主题的主色（Primary Color），通常和你的导航栏同色 */
+.md-typeset h1 {
+    font-size: 2.0rem;                    /* 字体大小 */
+    font-weight: 700;                     /* 加粗：700 为粗体，800 为特粗，400 为常规 */
+    color: var(---md-default-fg-color);    /* 调用主题主色 */
+    letter-spacing: -0.01em;              /* 略微紧凑字距，大字号更美观 */
+    margin-bottom: 1.2rem;                /* 下方留白 */
+}
+
+/* H2 标题：使用标准正文深色，加粗突出 */
+.md-typeset h2 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--md-default-fg-color);    /* 标准正文文本色 */
+    border-bottom: 1px solid var(--md-default-fg-color--lightest); /* 可选：下方加一条极淡的分割线，很有质感 */
+    padding-bottom: 0.3rem;
+    margin-top: 2.0rem;                   /* 上方留白，拉开章节距离 */
+    margin-bottom: 0.8rem;
+}
+
+/* H3 标题：使用略淡一点的文本色 */
+.md-typeset h3 {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--md-default-fg-color--light); /* 略淡的文本色 */
+    margin-top: 1.6rem;
+}
+
+/* H4 标题：使用主题的强调色（Accent Color），通常是链接或高亮的颜色 */
+.md-typeset h4 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--md-default-fg-color); /* 调用主题强调色（如悬停链接色） */
+}
+
+/* H5 标题：保持与 H3 类似的低调深色 */
+.md-typeset h5 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--md-default-fg-color--light);
+}
+
+
+/* ⚠️ 注意：如果你用了固定颜色，记得兼顾夜间模式！ */
+/* 当用户切换到深色模式时，将 H1 的颜色调浅，防止看不清 */
+/* 夜间模式下自动变为淡蓝色 */
+/* [data-md-color-scheme="slate"] .md-typeset h1 {
+    color: #60a5fa; 
+} */
+/* 调用主题配色 */
+/* --md-primary-fg-color */
