@@ -1,0 +1,38 @@
+/* 针对有子列表的 li 项目 */
+.collapsible-item {
+  position: relative;
+  list-style-type: none !important; /* 隐藏无序列表的默认圆点 */
+}
+
+/* 如果是嵌套在有序列表（ol）中的项目，隐藏其默认数字计数 */
+ol > .collapsible-item {
+  counter-increment: none; 
+}
+ol > .collapsible-item::before {
+  display: none !important; /* 隐藏 Material 主题可能生成的序号 */
+}
+
+/* 折叠箭头样式：精准放置在原本圆点/序号的位置 */
+.list-toggle-icon {
+  cursor: pointer;
+  position: absolute;
+  left: -1.2em;      /* 向左偏移，精准占据原本列表符号的空间 */
+  top: 0.15em;       /* 垂直居中微调，对齐首行文字 */
+  width: 1.1em;
+  height: 1.1em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease; /* 侧边栏同款旋转动画 */
+  fill: var(--md-typeset-color);   /* 自动跟随主题字色（适配明暗模式） */
+  opacity: 0.7;
+}
+
+.list-toggle-icon:hover {
+  opacity: 1;
+}
+
+/* 展开状态：箭头向下旋转 90 度 */
+.collapsible-item.is-expanded > .list-toggle-icon {
+  transform: rotate(90deg);
+}

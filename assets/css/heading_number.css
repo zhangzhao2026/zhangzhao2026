@@ -1,0 +1,95 @@
+/* =====================================================================
+   右侧目录自动序号补丁
+===================================================================== */
+
+/* 1. 初始化右侧目录每一层级的计数器 */
+.md-nav--secondary > .md-nav__list {
+  counter-reset: toc-h2; /* 初始化二级标题计数器 */
+}
+
+.md-nav--secondary .md-nav__list .md-nav__item .md-nav__list {
+  counter-reset: toc-h3; /* 初始化三级标题计数器 */
+}
+
+.md-nav--secondary .md-nav__list .md-nav__item .md-nav__list .md-nav__item .md-nav__list {
+  counter-reset: toc-h4; /* 初始化四级标题计数器 */
+}
+
+/* 2. 针对二级标题（H2）生成序号 (形如: 1 ) */
+.md-nav--secondary > .md-nav__list > .md-nav__item {
+  counter-increment: toc-h2;
+}
+.md-nav--secondary > .md-nav__list > .md-nav__item > .md-nav__link::before {
+  content: counter(toc-h2) " ";
+  margin-right: 0.35rem;
+  color: var(--md-default-fg-color--light); /* 序号颜色稍浅，保持视觉主次 */
+  font-weight: 500;
+}
+
+/* 3. 针对三级标题（H3）生成双级序号 (形如: 1.1 ) */
+.md-nav--secondary .md-nav__list .md-nav__item .md-nav__list > .md-nav__item {
+  counter-increment: toc-h3;
+}
+.md-nav--secondary .md-nav__list .md-nav__item .md-nav__list > .md-nav__item > .md-nav__link::before {
+  content: counter(toc-h2) "." counter(toc-h3) " ";
+  margin-right: 0.35rem;
+  color: var(--md-default-fg-color--light);
+}
+
+/* 4. 针对四级标题（H4）生成三级序号 (形如: 1.1.1 ) */
+.md-nav--secondary .md-nav__list .md-nav__item .md-nav__list .md-nav__item .md-nav__list > .md-nav__item {
+  counter-increment: toc-h4;
+}
+.md-nav--secondary .md-nav__list .md-nav__item .md-nav__list .md-nav__item .md-nav__list > .md-nav__item > .md-nav__link::before {
+  content: counter(toc-h2) "." counter(toc-h3) "." counter(toc-h4) " ";
+  margin-right: 0.35rem;
+  color: var(--md-default-fg-color--light);
+}
+
+
+
+
+
+/* =====================================================================
+   正文标题自动序号补丁（Tags 页面免疫版）
+===================================================================== */
+
+/* 1. 在正文容器初始化时，重置二级标题计数器（仅在没有 .no-heading-numbers 的页面生效） */
+body:not(.no-heading-numbers) .md-content__inner {
+  counter-reset: article-h2;
+}
+
+/* 2. 当遇到 H2 标题时 */
+body:not(.no-heading-numbers) .md-content__inner h2 {
+  counter-increment: article-h2;
+  counter-reset: article-h3 article-h4;
+}
+/* 在 H2 标题文字前注入序号 */
+body:not(.no-heading-numbers) .md-content__inner h2::before {
+  content: counter(article-h2) " ";
+  margin-right: 0.5rem;
+  color: var(--md-default-fg-color--light); /* 序号颜色略淡，保持视觉主次 */
+}
+
+/* 3. 当遇到 H3 标题时 */
+body:not(.no-heading-numbers) .md-content__inner h3 {
+  counter-increment: article-h3;
+  counter-reset: article-h4;
+}
+/* 在 H3 标题文字前注入“1.1”格式序号 */
+body:not(.no-heading-numbers) .md-content__inner h3::before {
+  content: counter(article-h2) "." counter(article-h3) " ";
+  margin-right: 0.5rem;
+  color: var(--md-default-fg-color--light);
+}
+
+/* 4. 当遇到 H4 标题时 */
+body:not(.no-heading-numbers) .md-content__inner h4 {
+  counter-increment: article-h4;
+}
+/* 在 H4 标题文字前注入“1.1.1”格式序号 */
+body:not(.no-heading-numbers) .md-content__inner h4::before {
+  content: counter(article-h2) "." counter(article-h3) "." counter(article-h4) " ";
+  margin-right: 0.5rem;
+  color: var(--md-default-fg-color--light);
+}
